@@ -1,36 +1,34 @@
-from collections import deque
-
 n=int(input())
-visit=[[0]*n for i in range(n)]
-graph=[]
-dx=[-1, 1, 0, 0]
-dy=[0, 0, -1, 1]
 
-for i in range(n):
-    graph.append(list(map(int, input())))
-print(graph)
-dq=deque()
-
+arr=[]
 ans=[]
 
 for i in range(n):
+    arr.append(list(map(int, input())))
+visits=[[0]*n for _ in range(n)]
+for i in range(n):
     for j in range(n):
-        if visit[i][j]==0 and graph[i][j]==1:
-            dq.append([i, j])
+        if visits[i][j]==0:
+            if arr[i][j]==0:
+                visits[i][j]=1
+                continue
             cnt=0
-            while dq:
-                y, x=dq.popleft()
-                visit[y][x]=1
-                cnt+=1
-                for k in range(4):
-                    xx=x+dx[k]
-                    yy=y+dy[k]
-                    if xx>=n or xx<0 or yy>=n or yy<0:
-                        continue
-                    if visit[yy][xx]==0 and graph[yy][xx]==1:
-                        dq.append([yy, xx])
+            stack=[[i, j]]
+            while stack:
+                y, x=stack.pop()
+                if y<0 or y>=n or x<0 or x>=n:
+                    continue
+                if visits[y][x]==1:
+                    continue
+                visits[y][x]=1
+                if arr[y][x]==1:
+                    cnt+=1
+                    stack.append([y+1, x])
+                    stack.append([y-1, x])
+                    stack.append([y, x+1])
+                    stack.append([y, x-1])
             ans.append(cnt)
 ans.sort()
 print(len(ans))
 for i in range(len(ans)):
-    print(ans[i])                        
+    print(ans[i])
