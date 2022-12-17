@@ -1,9 +1,10 @@
+import sys
+input=sys.stdin.readline
+
 n=int(input())
 for i in range(n):
     cnt=int(input())
-    arr=[0]*cnt
-    for j in range(cnt):
-        arr[j]=list(map(int, input().split()))
+    arr=[list(map(int, input().split())) for _ in range(cnt)]
     arr=sorted(arr, key=lambda x:x[0])
     
     ans=1
