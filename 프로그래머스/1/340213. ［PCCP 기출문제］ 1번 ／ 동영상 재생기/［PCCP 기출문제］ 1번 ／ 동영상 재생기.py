@@ -1,42 +1,35 @@
+def to_second(time):
+    mm, ss = map(int, time.split(":"))
+    return mm * 60 + ss
+
 def solution(video_len, pos, op_start, op_end, commands):
-    video_mm, video_ss = map(int, video_len.split(":"))
-    start_mm, start_ss = map(int, op_start.split(":"))
-    end_mm, end_ss = map(int, op_end.split(":"))
+    video_sec = to_second(video_len)
+    op_start_sec = to_second(op_start)
+    op_end_sec = to_second(op_end)
+    pos_sec = to_second(pos)
     
-    start_cnt = start_mm * 60 + start_ss
-    end_cnt = end_mm * 60 + end_ss
-    
-    def skip(cur):
-        mm, ss = map(int, cur.split(":"))
-        cur_cnt = mm * 60 + ss
-        
-        if start_cnt <= cur_cnt and cur_cnt < end_cnt:
-            return op_end
+    def skip(cur_sec):
+        if op_start_sec <= cur_sec < op_end_sec:
+            return op_end_sec
         else:
-            return cur
+            return cur_sec
                 
     for command in commands:
-        pos = skip(pos)
-        mm, ss = map(int, pos.split(":"))
+        pos_sec = skip(pos_sec)
         
         if command == "next":
-            ss += 10
+            pos_sec += 10
         elif command == "prev":
-            ss -=10
+            pos_sec -=10
         
-        if 60 < ss:
-            ss -=60
-            mm += 1
-        elif ss < 0:
-            ss +=60
-            mm -=1
+        if pos_sec < 0:
+            pos_sec = 0
+        elif video_sec < pos_sec:
+            pos_sec = video_sec
         
-        if mm < 0:
-            mm, ss = 0, 0
-        elif video_mm <= mm and video_ss < ss:
-            mm, ss = video_mm, video_ss
-        
-        pos = f"{mm:02d}:{ss:02d}"
-        pos = skip(pos)
-        
-    return pos
+        pos_sec = skip(pos_sec)
+    
+    mm = pos_sec // 60
+    ss = pos_sec % 60
+    answer = f"{mm:02d}:{ss:02d}"
+    return answer
